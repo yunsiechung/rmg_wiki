@@ -2,6 +2,8 @@ import csv
 import numpy
 from openpyxl import Workbook
 from rmgpy.chemkin import getSpeciesIdentifier
+from IPython.display import display
+import numpy as np
 
 """
 Assume ckcsv contains only one Soln
@@ -196,3 +198,61 @@ def getROPFlux(spc_rop_dict, species_string, rxn_index):
                 flux = flux_tup[1]
                 return flux
     return []
+
+def showTheMostDominantSpecies(dominant_list, moleFraction_dict, species_identifier_dict):
+    if len(dominant_list) is 1:
+        order = dominant_list[0]
+        v = list(moleFraction_dict.values())
+        k = list(moleFraction_dict.keys())
+        index_list = [i[0] for i in sorted(enumerate(v), key=lambda x:x[1], reverse=True)]
+        index_number = index_list[order]
+        species_dominant = k[index_number]
+        molecule_dominant = species_identifier_dict.get(species_dominant)
+        new_order = order+1
+        if new_order == 1:
+            print "****The most abundant species****"
+        elif new_order == 2:
+            print "****The 2nd most abundant species****"
+        elif new_order == 3:
+            print "****The 3rd most abundant species****"
+        elif new_order % 10 is 1 and new_order is not 11:
+            print "****The {0}st most abundant species****".format(new_order)
+        elif new_order % 10 is 2 and new_order is not 12:
+            print "****The {0}nd most abundant species****".format(new_order)
+        elif new_order % 10 is 3 and new_order is not 13:
+            print "****The {0}rd most abundant species****".format(new_order)
+        else:
+            print "****The {0}th most abundant species****".format(new_order)
+        display(molecule_dominant)
+        print "{0}: {1} (mole fraction)".format(species_dominant, v[index_number])
+        print ''
+    elif len(dominant_list) is 2:
+        first = dominant_list[0]
+        last = dominant_list[1]
+        number_of_points = last-first+1
+        for a in list(np.linspace(first, last, number_of_points, True)):
+            order = int(a)
+            v = list(moleFraction_dict.values())
+            k = list(moleFraction_dict.keys())
+            index_list = [i[0] for i in sorted(enumerate(v), key=lambda x:x[1], reverse=True)]
+            index_number = index_list[order]
+            species_dominant = k[index_number]
+            molecule_dominant = species_identifier_dict.get(species_dominant)
+            new_order = order+1
+            if new_order == 1:
+                print "****The most abundant species****"
+            elif new_order == 2:
+                print "****The 2nd most abundant species****"
+            elif new_order == 3:
+                print "****The 3rd most abundant species****"
+            elif new_order % 10 is 1 and new_order is not 11:
+                print "****The {0}st most abundant species****".format(new_order)
+            elif new_order % 10 is 2 and new_order is not 12:
+                print "****The {0}nd most abundant species****".format(new_order)
+            elif new_order % 10 is 3 and new_order is not 13:
+                print "****The {0}rd most abundant species****".format(new_order)
+            else:
+                print "****The {0}th most abundant species****".format(new_order)
+            display(molecule_dominant)
+            print "{0}: {1} (mole fraction)".format(species_dominant, v[index_number])
+            print ''
